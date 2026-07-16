@@ -1,5 +1,0 @@
-python-telegram-bot==22.0
-fastapi==0.111.0
-uvicorn==0.30.0
-python-dotenv==1.0.1
-sqlite-utils==3.36
