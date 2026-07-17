@@ -6,7 +6,7 @@ const keyboard = {
       ["🌍 تغيير اللغة", "ℹ️ عن البوت"]
     ],
     resize_keyboard: true,
-    persistent: true
+    is_persistent: true
   }
 };
 
