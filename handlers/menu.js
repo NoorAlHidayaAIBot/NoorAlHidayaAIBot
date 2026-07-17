@@ -1,10 +1,9 @@
 const bot = require("../config/bot");
 
-require("./tafsir");
+require("./quran");
 require("./hadith");
 require("./fiqh");
-require("./adhkar");
-require("./language");
+require("./azkar");
 require("./about");
 
 module.exports = bot;
