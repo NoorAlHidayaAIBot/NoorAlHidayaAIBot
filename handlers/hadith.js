@@ -1,8 +1,9 @@
 const bot = require("../config/bot");
 
-bot.onText(/📚 الأحاديث/, (msg) => {
-  bot.sendMessage(
-    msg.chat.id,
+bot.on("message", (msg) => {
+  if (msg.text === "📚 الأحاديث") {
+    bot.sendMessage(
+      msg.chat.id,
 `📚 قسم الأحاديث النبوية
 
 مرحبًا بك في قسم الأحاديث.
@@ -15,5 +16,6 @@ bot.onText(/📚 الأحاديث/, (msg) => {
 🔹 جامع الترمذي.
 
 🚧 هذا القسم قيد التطوير وسيتم إضافة البحث الذكي قريبًا بإذن الله.`
-  );
+    );
+  }
 });
