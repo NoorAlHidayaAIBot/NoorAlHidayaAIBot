@@ -1,21 +1,7 @@
 const bot = require("../config/bot");
 
 bot.on("message", (msg) => {
-  if (msg.text === "📚 الأحاديث") {
-    bot.sendMessage(
-      msg.chat.id,
-`📚 قسم الأحاديث النبوية
+  console.log("MESSAGE:", msg.text);
 
-مرحبًا بك في قسم الأحاديث.
-
-اختر ما تريد:
-
-🔹 البحث عن حديث.
-🔹 صحيح البخاري.
-🔹 صحيح مسلم.
-🔹 جامع الترمذي.
-
-🚧 هذا القسم قيد التطوير وسيتم إضافة البحث الذكي قريبًا بإذن الله.`
-    );
-  }
+  bot.sendMessage(msg.chat.id, `وصلني: ${msg.text}`);
 });
