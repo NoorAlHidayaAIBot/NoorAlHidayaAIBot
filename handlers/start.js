@@ -28,11 +28,7 @@ bot.on("message", async (msg) => {
   if (text === "/start") {
     waitingForHadithSearch.delete(chatId);
 
-    return bot.sendMessage(
-      chatId,
-      welcomeMessage,
-      keyboard
-    );
+    return bot.sendMessage(chatId, welcomeMessage, keyboard);
   }
 
   if (text === "📚 الأحاديث") {
@@ -50,11 +46,7 @@ bot.on("message", async (msg) => {
   if (text === "⬅️ العودة للقائمة الرئيسية") {
     waitingForHadithSearch.delete(chatId);
 
-    return bot.sendMessage(
-      chatId,
-      welcomeMessage,
-      keyboard
-    );
+    return bot.sendMessage(chatId, welcomeMessage, keyboard);
   }
 
   if (
@@ -97,14 +89,13 @@ bot.on("message", async (msg) => {
       );
     }
 
-    let message = "📚 نتائج البحث:\n\n";
+    const hadith = results[0];
 
-    results.forEach((hadith, index) => {
-      message += `${index + 1}- ${hadith.book}\n`;
-      message += `🔢 رقم الحديث: ${hadith.number}\n\n`;
-      message += `${hadith.text}\n\n`;
-      message += "━━━━━━━━━━━━━━━━━━━━\n\n";
-    });
+    const message = `📚 ${hadith.book}
+
+🔢 رقم الحديث: ${hadith.number}
+
+📜 ${hadith.text}`;
 
     return bot.sendMessage(chatId, message);
   }
