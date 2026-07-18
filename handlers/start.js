@@ -63,5 +63,3 @@ if (msg.text === "📖 صحيح البخاري") {
 }
 
 module.exports = bot;
-
-module.exports = bot;
