@@ -1,30 +1,51 @@
-const axios = require("axios");
+const bukhari = require("../database/bukhari.json");
+const muslim = require("../database/muslim.json");
+const tirmidhi = require("../database/tirmidhi.json");
 
-const BASE_URL = "https://ummahapi.com/api/hadith/search";
+const books = [
+  {
+    name: "📖 صحيح البخاري",
+    hadiths: bukhari.hadiths
+  },
+  {
+    name: "📘 صحيح مسلم",
+    hadiths: muslim.hadiths
+  },
+  {
+    name: "📙 جامع الترمذي",
+    hadiths: tirmidhi.hadiths
+  }
+];
 
-async function searchHadith(query) {
-  try {
-    const response = await axios.get(BASE_URL, {
-      params: {
-        q: query,
-        limit: 5
+function searchHadith(query) {
+  query = query.trim();
+
+  const results = [];
+
+  for (const book of books) {
+    for (const hadith of book.hadiths) {
+
+      const text = hadith.arabic || "";
+      const number = String(hadith.idInBook || "");
+
+      if (
+        text.includes(query) ||
+        number === query
+      ) {
+        results.push({
+          book: book.name,
+          number: hadith.idInBook,
+          text: text
+        });
       }
-    });
 
-    if (
-      !response.data ||
-      !response.data.success ||
-      !response.data.data ||
-      response.data.data.length === 0
-    ) {
-      return [];
+      if (results.length >= 5) break;
     }
 
-    return response.data.data;
-  } catch (error) {
-    console.error("Hadith API Error:", error.message);
-    return [];
+    if (results.length >= 5) break;
   }
+
+  return results;
 }
 
 module.exports = {
