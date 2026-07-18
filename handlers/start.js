@@ -27,7 +27,7 @@ bot.on("message", (msg) => {
   if (msg.text === "📚 الأحاديث") {
     return bot.sendMessage(
       msg.chat.id,
-      `📚 قسم الأحاديث النبوية
+`📚 قسم الأحاديث النبوية
 
 مرحبًا بك في قسم الأحاديث.
 
@@ -44,10 +44,9 @@ bot.on("message", (msg) => {
     );
   }
 
-
-if (msg.text === "📖 صحيح البخاري") {
-  return bot.sendMessage(
-    msg.chat.id,
+  if (msg.text === "📖 صحيح البخاري") {
+    return bot.sendMessage(
+      msg.chat.id,
 `📖 صحيح البخاري
 
 مرحبًا بك في قسم صحيح البخاري.
@@ -59,7 +58,9 @@ if (msg.text === "📖 صحيح البخاري") {
 📚 تصفح الأبواب
 
 🚧 سيتم قريبًا ربط هذا القسم بقاعدة بيانات كاملة لصحيح البخاري بإذن الله.`
-  );
-}
+    );
+  }
+
 });
+
 module.exports = bot;
