@@ -1,6 +1,9 @@
 const bot = require("../config/bot");
 const keyboard = require("../keyboards/mainMenu");
 const { welcomeMessage } = require("../utils/messages");
+const { searchHadith } = require("../services/hadithService");
+
+const waitingForHadithSearch = new Set();
 
 const hadithKeyboard = {
   reply_markup: {
@@ -15,87 +18,92 @@ const hadithKeyboard = {
   }
 };
 
-bot.on("message", (msg) => {
+bot.on("message", async (msg) => {
 
-  if (msg.text === "/start") {
+  const chatId = msg.chat.id;
+  const text = msg.text;
+
+  if (!text) return;
+
+  if (text === "/start") {
+    waitingForHadithSearch.delete(chatId);
+
     return bot.sendMessage(
-      msg.chat.id,
+      chatId,
       welcomeMessage,
       keyboard
     );
   }
 
-  if (msg.text === "📚 الأحاديث") {
+  if (text === "📚 الأحاديث") {
+    waitingForHadithSearch.delete(chatId);
+
     return bot.sendMessage(
-      msg.chat.id,
+      chatId,
 `📚 قسم الأحاديث النبوية
 
-مرحبًا بك في قسم الأحاديث.
-
-اختر الخدمة التي تريدها من القائمة التالية:`,
+اختر الخدمة التي تريدها:`,
       hadithKeyboard
     );
   }
 
-  if (msg.text === "⬅️ العودة للقائمة الرئيسية") {
+  if (text === "⬅️ العودة للقائمة الرئيسية") {
+    waitingForHadithSearch.delete(chatId);
+
     return bot.sendMessage(
-      msg.chat.id,
+      chatId,
       welcomeMessage,
       keyboard
     );
   }
 
-  if (msg.text === "📖 صحيح البخاري") {
+  if (
+    text === "📖 صحيح البخاري" ||
+    text === "📘 صحيح مسلم" ||
+    text === "📙 جامع الترمذي"
+  ) {
+    waitingForHadithSearch.delete(chatId);
+
     return bot.sendMessage(
-      msg.chat.id,
-`📖 صحيح البخاري
+      chatId,
+`يمكنك الآن الضغط على:
 
-مرحبًا بك في قسم صحيح البخاري.
-
-اختر طريقة البحث:
-
-🔍 البحث برقم الحديث
-📝 البحث بكلمة
-📚 تصفح الأبواب
-
-🚧 سيتم قريبًا ربط هذا القسم بقاعدة بيانات كاملة لصحيح البخاري بإذن الله.`
+🔍 البحث عن حديث`
     );
   }
 
-  if (msg.text === "📘 صحيح مسلم") {
+  if (text === "🔍 البحث عن حديث") {
+
+    waitingForHadithSearch.add(chatId);
+
     return bot.sendMessage(
-      msg.chat.id,
-`📘 صحيح مسلم
-
-مرحبًا بك في قسم صحيح مسلم.
-
-🚧 سيتم قريبًا ربط هذا القسم بقاعدة بيانات كاملة لصحيح مسلم بإذن الله.`
+      chatId,
+`✍️ اكتب الآن كلمة أو رقم الحديث.`
     );
   }
 
-  if (msg.text === "📙 جامع الترمذي") {
+  if (waitingForHadithSearch.has(chatId)) {
+
+    waitingForHadithSearch.delete(chatId);
+
+    await bot.sendMessage(chatId, "🔎 جاري البحث...");
+
+    const results = await searchHadith(text);
+
+    if (!results.length) {
+      return bot.sendMessage(
+        chatId,
+        "❌ لم يتم العثور على نتائج."
+      );
+    }
+
+    const first = results[0];
+
     return bot.sendMessage(
-      msg.chat.id,
-`📙 جامع الترمذي
+      chatId,
+`📚 ${first.collection || ""}
 
-مرحبًا بك في قسم جامع الترمذي.
-
-🚧 سيتم قريبًا ربط هذا القسم بقاعدة بيانات كاملة لجامع الترمذي بإذن الله.`
-    );
-  }
-
-  if (msg.text === "🔍 البحث عن حديث") {
-    return bot.sendMessage(
-      msg.chat.id,
-`🔎 البحث عن حديث
-
-أرسل الآن:
-
-• رقم الحديث.
-أو
-• كلمة من الحديث.
-
-وسيتم البحث عنه بإذن الله.`
+${first.hadith || first.text || ""}`
     );
   }
 
