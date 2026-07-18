@@ -44,7 +44,7 @@ bot.on("message", (msg) => {
     );
   }
 
-});
+
 if (msg.text === "📖 صحيح البخاري") {
   return bot.sendMessage(
     msg.chat.id,
@@ -61,5 +61,5 @@ if (msg.text === "📖 صحيح البخاري") {
 🚧 سيتم قريبًا ربط هذا القسم بقاعدة بيانات كاملة لصحيح البخاري بإذن الله.`
   );
 }
-
+});
 module.exports = bot;
