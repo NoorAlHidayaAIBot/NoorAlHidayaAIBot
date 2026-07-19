@@ -4,64 +4,75 @@ const tirmidhi = require("../database/tirmidhi.json");
 
 const books = [
   {
+    id: "bukhari",
     name: "📖 صحيح البخاري",
-    hadiths: Array.isArray(bukhari.hadiths) ? bukhari.hadiths : []
+    data: bukhari.hadiths || []
   },
   {
+    id: "muslim",
     name: "📘 صحيح مسلم",
-    hadiths: Array.isArray(muslim.hadiths) ? muslim.hadiths : []
+    data: muslim.hadiths || []
   },
   {
+    id: "tirmidhi",
     name: "📙 جامع الترمذي",
-    hadiths: Array.isArray(tirmidhi.hadiths) ? tirmidhi.hadiths : []
+    data: tirmidhi.hadiths || []
   }
 ];
 
 function normalize(text = "") {
-  return text
+  return String(text)
     .replace(/[\u064B-\u065F\u0670]/g, "")
     .replace(/[إأآ]/g, "ا")
     .replace(/ؤ/g, "و")
     .replace(/ئ/g, "ي")
     .replace(/ى/g, "ي")
     .replace(/ة/g, "ه")
+    .replace(/\s+/g, " ")
     .trim()
     .toLowerCase();
 }
 
 function searchHadith(query) {
 
-  const q = normalize(String(query));
+  const q = normalize(query);
+
   const results = [];
+
+  const isNumber = /^\d+$/.test(query);
 
   for (const book of books) {
 
-    for (const hadith of book.hadiths) {
+    for (const hadith of book.data) {
 
       if (!hadith) continue;
 
-      const arabic = hadith.arabic || "";
+      const text = hadith.arabic || "";
       const number = String(hadith.idInBook || hadith.id || "");
 
       if (
-        number === String(query) ||
-        normalize(arabic).includes(q)
+        (isNumber && number === query) ||
+        (!isNumber && normalize(text).includes(q))
       ) {
 
         results.push({
           book: book.name,
-          number,
-          text: arabic
+          number: number,
+          text: text
         });
 
-        if (results.length >= 5) {
+        if (results.length === 5) {
           return results;
         }
+
       }
+
     }
+
   }
 
   return results;
+
 }
 
 module.exports = {
