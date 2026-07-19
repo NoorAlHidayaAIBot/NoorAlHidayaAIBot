@@ -27,7 +27,6 @@ bot.on("message", async (msg) => {
 
   if (text === "/start") {
     waitingForHadithSearch.delete(chatId);
-
     return bot.sendMessage(chatId, welcomeMessage, keyboard);
   }
 
@@ -45,7 +44,6 @@ bot.on("message", async (msg) => {
 
   if (text === "⬅️ العودة للقائمة الرئيسية") {
     waitingForHadithSearch.delete(chatId);
-
     return bot.sendMessage(chatId, welcomeMessage, keyboard);
   }
 
@@ -58,19 +56,18 @@ bot.on("message", async (msg) => {
 
     return bot.sendMessage(
       chatId,
-      `يمكنك الآن الضغط على:
+      `اضغط على:
 
 🔍 البحث عن حديث`
     );
   }
 
   if (text === "🔍 البحث عن حديث") {
-
     waitingForHadithSearch.add(chatId);
 
     return bot.sendMessage(
       chatId,
-      "✍️ اكتب كلمة أو جزءًا من الحديث أو رقم الحديث."
+      "✍️ اكتب كلمة، أو جزءًا من الحديث، أو رقم الحديث."
     );
   }
 
@@ -80,24 +77,45 @@ bot.on("message", async (msg) => {
 
     await bot.sendMessage(chatId, "🔎 جاري البحث...");
 
-    const results = searchHadith(text);
+    try {
 
-    if (!results.length) {
-      return bot.sendMessage(
-        chatId,
-        "❌ لم يتم العثور على أي حديث."
-      );
-    }
+      const results = searchHadith(text);
 
-    const hadith = results[0];
+      if (!results || results.length === 0) {
+        return bot.sendMessage(
+          chatId,
+          "❌ لم يتم العثور على أي حديث."
+        );
+      }
 
-    const message = `📚 ${hadith.book}
+      let message = "📚 نتائج البحث:\n\n";
 
+      results.forEach((hadith, index) => {
+
+        message += `${index + 1}- ${hadith.book}
 🔢 رقم الحديث: ${hadith.number}
 
-📜 ${hadith.text}`;
+${hadith.text}
 
-    return bot.sendMessage(chatId, message);
+━━━━━━━━━━━━━━━━━━━━
+
+`;
+
+      });
+
+      return bot.sendMessage(chatId, message);
+
+    } catch (err) {
+
+      console.error(err);
+
+      return bot.sendMessage(
+        chatId,
+        "⚠️ حدث خطأ أثناء البحث."
+      );
+
+    }
+
   }
 
 });
