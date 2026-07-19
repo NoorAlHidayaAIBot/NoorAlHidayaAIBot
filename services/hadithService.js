@@ -2,24 +2,6 @@ const bukhari = require("../database/bukhari.json");
 const muslim = require("../database/muslim.json");
 const tirmidhi = require("../database/tirmidhi.json");
 
-const books = [
-  {
-    id: "bukhari",
-    name: "📖 صحيح البخاري",
-    data: bukhari.hadiths || []
-  },
-  {
-    id: "muslim",
-    name: "📘 صحيح مسلم",
-    data: muslim.hadiths || []
-  },
-  {
-    id: "tirmidhi",
-    name: "📙 جامع الترمذي",
-    data: tirmidhi.hadiths || []
-  }
-];
-
 function normalize(text = "") {
   return String(text)
     .replace(/[\u064B-\u065F\u0670]/g, "")
@@ -28,51 +10,64 @@ function normalize(text = "") {
     .replace(/ئ/g, "ي")
     .replace(/ى/g, "ي")
     .replace(/ة/g, "ه")
+    .replace(/[^\u0621-\u064A0-9 ]/g, " ")
     .replace(/\s+/g, " ")
     .trim()
     .toLowerCase();
 }
 
+const allHadiths = [];
+
+function loadBook(bookName, data) {
+
+  if (!data || !Array.isArray(data.hadiths)) return;
+
+  for (const hadith of data.hadiths) {
+
+    if (!hadith || !hadith.arabic) continue;
+
+    allHadiths.push({
+      book: bookName,
+      number: hadith.idInBook || hadith.id,
+      text: hadith.arabic,
+      normalized: normalize(hadith.arabic)
+    });
+
+  }
+
+}
+
+loadBook("📖 صحيح البخاري", bukhari);
+loadBook("📘 صحيح مسلم", muslim);
+loadBook("📙 جامع الترمذي", tirmidhi);
+
+console.log(`✅ Loaded ${allHadiths.length} hadiths`);
 function searchHadith(query) {
 
   const q = normalize(query);
 
   const results = [];
 
-  const isNumber = /^\d+$/.test(query);
+  for (const hadith of allHadiths) {
 
-  for (const book of books) {
+    if (
+      String(hadith.number) === String(query).trim() ||
+      hadith.normalized.includes(q)
+    ) {
 
-    for (const hadith of book.data) {
+      results.push({
+        book: hadith.book,
+        number: hadith.number,
+        text: hadith.text
+      });
 
-      if (!hadith) continue;
-
-      const text = hadith.arabic || "";
-      const number = String(hadith.idInBook || hadith.id || "");
-
-      if (
-        (isNumber && number === query) ||
-        (!isNumber && normalize(text).includes(q))
-      ) {
-
-        results.push({
-          book: book.name,
-          number: number,
-          text: text
-        });
-
-        if (results.length === 5) {
-          return results;
-        }
-
+      if (results.length >= 5) {
+        break;
       }
-
     }
-
   }
 
   return results;
-
 }
 
 module.exports = {
