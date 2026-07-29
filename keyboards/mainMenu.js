@@ -1,6 +1,6 @@
 const keyboard = {
   reply_markup: {
-    keyboard: keyboard: [
+    keyboard: [
   ["📖 تفسير القرآن", "📚 الأحاديث"],
   ["⚖️ الفقه الإسلامي", "🕌 الفتاوى"],
   ["🤖 عن البوت"]
