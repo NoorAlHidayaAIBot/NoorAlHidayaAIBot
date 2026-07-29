@@ -25,11 +25,44 @@ bot.on("message", async (msg) => {
 
   if (!text) return;
 
+  // /start
   if (text === "/start") {
     waitingForHadithSearch.delete(chatId);
     return bot.sendMessage(chatId, welcomeMessage, keyboard);
   }
 
+  // عن البوت
+  if (text === "🤖 عن البوت") {
+    waitingForHadithSearch.delete(chatId);
+
+    return bot.sendMessage(chatId, `🤖 عن البوت
+
+🌿 نور الهداية AI
+
+بوت إسلامي ذكي يهدف إلى نشر العلم الشرعي الصحيح وتسهيل الوصول إليه، وتقديم المعرفة الإسلامية بطريقة سهلة ودقيقة.
+
+━━━━━━━━━━━━━━
+
+📚 خدمات البوت:
+
+📖 تفسير القرآن الكريم.
+📚 البحث في الأحاديث النبوية.
+⚖️ الفقه الإسلامي مع بيان أقوال المذاهب الأربعة.
+🕌 الفتاوى والأحكام الشرعية.
+📿 الأذكار والأدعية.
+🌍 يدعم العربية والإنجليزية والفرنسية، ويجيب باللغة التي تكتب بها.
+
+━━━━━━━━━━━━━━
+
+👨‍💻 تصميم وتطوير:
+ثامر الحجري
+
+🌹 هذا العمل هدية للهادي وفاطمة، نسأل الله أن يبارك لهما، ويمنّ عليهما بالصحة والعافية، وأن يجعله صدقةً جاريةً في ميزان حسناتهما.
+
+🤲 اللهم صلِّ وسلم وبارك على نبينا محمد ﷺ.`);
+  }
+
+  // قسم الأحاديث
   if (text === "📚 الأحاديث") {
     waitingForHadithSearch.delete(chatId);
 
@@ -42,11 +75,13 @@ bot.on("message", async (msg) => {
     );
   }
 
+  // العودة للقائمة
   if (text === "⬅️ العودة للقائمة الرئيسية") {
     waitingForHadithSearch.delete(chatId);
     return bot.sendMessage(chatId, welcomeMessage, keyboard);
   }
 
+  // اختيار كتاب
   if (
     text === "📖 صحيح البخاري" ||
     text === "📘 صحيح مسلم" ||
@@ -62,7 +97,9 @@ bot.on("message", async (msg) => {
     );
   }
 
+  // البحث عن حديث
   if (text === "🔍 البحث عن حديث") {
+
     waitingForHadithSearch.add(chatId);
 
     return bot.sendMessage(
@@ -71,6 +108,7 @@ bot.on("message", async (msg) => {
     );
   }
 
+  // تنفيذ البحث
   if (waitingForHadithSearch.has(chatId)) {
 
     waitingForHadithSearch.delete(chatId);
