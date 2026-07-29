@@ -1,9 +1,8 @@
 require("dotenv").config();
 
-// تشغيل البوت
 require("./config/bot");
 
-// تحميل المعالجات
 require("./handlers/start");
+require("./handlers/hadith");
 
 console.log("🌿 NoorAlHidayaAI Bot Started Successfully");
