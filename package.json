@@ -1,18 +1,14 @@
-const axios = require("axios");
-
-async function getTafsir(surah, ayah) {
-  try {
-    const response = await axios.get(
-      `https://api.alquran.cloud/v1/ayah/${surah}:${ayah}/ar.muyassar`
-    );
-
-    return response.data.data;
-  } catch (err) {
-    console.error(err);
-    return null;
-  }
+{
+"name": "nooralhidayaaibot",
+"version": "1.0.0",
+"description": "NoorAlHidayaAI Telegram Bot",
+"main": "index.js",
+"scripts": {
+"start": "node index.js"
+},
+"dependencies": {
+"axios": "^1.11.0",
+"node-telegram-bot-api": "^0.66.0",
+"dotenv": "^16.4.5"
 }
-
-module.exports = {
-  getTafsir
-};
+}
