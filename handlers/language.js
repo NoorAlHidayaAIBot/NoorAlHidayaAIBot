@@ -28,4 +28,47 @@ bot.on("message", async (msg) => {
     text === "🌐 Language" ||
     text === "🌐 Langue"
   ) {
-    return
+    return bot.sendMessage(
+      chatId,
+      "🌐 اختر اللغة / Choose language / Choisissez la langue",
+      languageKeyboard
+    );
+  }
+
+  // العربية
+  if (text === "🇸🇦 العربية") {
+
+    setLanguage(chatId, "ar");
+
+    return bot.sendMessage(
+      chatId,
+      "✅ تم تغيير اللغة إلى العربية.",
+      getMenu(getLanguage(chatId))
+    );
+  }
+
+  // الإنجليزية
+  if (text === "🇬🇧 English") {
+
+    setLanguage(chatId, "en");
+
+    return bot.sendMessage(
+      chatId,
+      "✅ Language changed to English.",
+      getMenu(getLanguage(chatId))
+    );
+  }
+
+  // الفرنسية
+  if (text === "🇫🇷 Français") {
+
+    setLanguage(chatId, "fr");
+
+    return bot.sendMessage(
+      chatId,
+      "✅ Langue changée en français.",
+      getMenu(getLanguage(chatId))
+    );
+  }
+
+});
