@@ -1,6 +1,7 @@
 const bot = require("../config/bot");
-const keyboard = require("../keyboards/mainMenu");
-const { welcomeMessage } = require("../utils/messages");
+const { getMenu } = require("../keyboards/dynamicMenu");
+const { getLanguage } = require("../services/languageService");
+const translations = require("../utils/translations");
 const { searchHadith } = require("../services/hadithService");
 
 const waitingForHadithSearch = new Set();
@@ -25,29 +26,47 @@ bot.on("message", async (msg) => {
 
   if (!text) return;
 
+  const language = getLanguage(chatId);
+  const t = translations[language] || translations.ar;
+
   // /start
   if (text === "/start") {
-    waitingForHadithSearch.delete(chatId);
-    return bot.sendMessage(chatId, welcomeMessage, keyboard);
-  }
 
-  // قسم الأحاديث
-  if (text === "📚 الأحاديث") {
     waitingForHadithSearch.delete(chatId);
 
     return bot.sendMessage(
       chatId,
-      `📚 قسم الأحاديث النبوية
-
-اختر الخدمة التي تريدها:`,
-      hadithKeyboard
+      t.welcome,
+      getMenu(language)
     );
   }
 
-  // العودة للقائمة
+  // العودة للقائمة الرئيسية
   if (text === "⬅️ العودة للقائمة الرئيسية") {
+
     waitingForHadithSearch.delete(chatId);
-    return bot.sendMessage(chatId, welcomeMessage, keyboard);
+
+    return bot.sendMessage(
+      chatId,
+      t.welcome,
+      getMenu(language)
+    );
+  }
+
+  // قسم الأحاديث
+  if (
+    text === "📚 الأحاديث" ||
+    text === "📚 Hadith" ||
+    text === "📚 Hadiths"
+  ) {
+
+    waitingForHadithSearch.delete(chatId);
+
+    return bot.sendMessage(
+      chatId,
+      "📚 قسم الأحاديث\n\nاختر الخدمة التي تريدها:",
+      hadithKeyboard
+    );
   }
 
   // اختيار كتاب
@@ -56,17 +75,16 @@ bot.on("message", async (msg) => {
     text === "📘 صحيح مسلم" ||
     text === "📙 جامع الترمذي"
   ) {
+
     waitingForHadithSearch.delete(chatId);
 
     return bot.sendMessage(
       chatId,
-      `اضغط على:
-
-🔍 البحث عن حديث`
+      "اضغط على:\n\n🔍 البحث عن حديث"
     );
   }
 
-  // البحث عن حديث
+  // البحث
   if (text === "🔍 البحث عن حديث") {
 
     waitingForHadithSearch.add(chatId);
@@ -89,10 +107,7 @@ bot.on("message", async (msg) => {
       const results = searchHadith(text);
 
       if (!results || results.length === 0) {
-        return bot.sendMessage(
-          chatId,
-          "❌ لم يتم العثور على أي حديث."
-        );
+        return bot.sendMessage(chatId, "❌ لم يتم العثور على أي حديث.");
       }
 
       let message = "📚 نتائج البحث:\n\n";
@@ -116,10 +131,7 @@ ${hadith.text}
 
       console.error(err);
 
-      return bot.sendMessage(
-        chatId,
-        "⚠️ حدث خطأ أثناء البحث."
-      );
+      return bot.sendMessage(chatId, "⚠️ حدث خطأ أثناء البحث.");
 
     }
 
