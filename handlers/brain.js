@@ -3,31 +3,45 @@ const { getSmartReply } = require("../services/brainService");
 
 bot.on("message", async (msg) => {
 
-  const chatId = msg.chat.id;
-  const text = msg.text;
+    const chatId = msg.chat.id;
+    const text = msg.text;
 
-  if (!text) return;
+    if (!text) return;
 
-  // تجاهل الأوامر والأزرار حتى لا تتعارض مع باقي الملفات
-  const ignored = [
-    "/start",
-    "📚 الأحاديث",
-    "📖 تفسير القرآن",
-    "🤖 عن البوت",
-    "🔍 البحث عن حديث",
-    "📖 صحيح البخاري",
-    "📘 صحيح مسلم",
-    "📙 جامع الترمذي",
-    "⬅️ العودة للقائمة الرئيسية"
-  ];
+    const ignored = [
+        "/start",
 
-  if (ignored.includes(text)) return;
+        "📚 الأحاديث",
+        "📚 Hadith",
+        "📚 Hadiths",
 
-  const reply = getSmartReply(text);
+        "📖 تفسير القرآن",
+        "📖 Quran Tafsir",
+        "📖 Tafsir du Coran",
 
-  if (reply) {
-    return bot.sendMessage(chatId, reply);
-  }
+        "🤖 عن البوت",
+        "🤖 About Bot",
+        "🤖 À propos",
+
+        "🌐 تغيير اللغة",
+        "🌐 Language",
+        "🌐 Langue",
+
+        "🔍 البحث عن حديث",
+        "📖 صحيح البخاري",
+        "📘 صحيح مسلم",
+        "📙 جامع الترمذي",
+
+        "⬅️ العودة للقائمة الرئيسية"
+    ];
+
+    if (ignored.includes(text)) return;
+
+    const reply = getSmartReply(text);
+
+    if (reply) {
+        return bot.sendMessage(chatId, reply);
+    }
 
 });
 
