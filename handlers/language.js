@@ -1,6 +1,6 @@
 const bot = require("../config/bot");
-const keyboard = require("../keyboards/mainMenu");
-const { setLanguage } = require("../services/languageService");
+const { setLanguage, getLanguage } = require("../services/languageService");
+const { getMenu } = require("../keyboards/dynamicMenu");
 
 const languageKeyboard = {
   reply_markup: {
@@ -23,48 +23,9 @@ bot.on("message", async (msg) => {
   if (!text) return;
 
   // فتح قائمة اللغات
-  if (text === "🌐 تغيير اللغة") {
-    return bot.sendMessage(
-      chatId,
-      "🌐 اختر اللغة:",
-      languageKeyboard
-    );
-  }
-
-  // العربية
-  if (text === "🇸🇦 العربية") {
-
-    setLanguage(chatId, "ar");
-
-    return bot.sendMessage(
-      chatId,
-      "✅ تم تغيير اللغة إلى العربية.",
-      keyboard
-    );
-  }
-
-  // الإنجليزية
-  if (text === "🇬🇧 English") {
-
-    setLanguage(chatId, "en");
-
-    return bot.sendMessage(
-      chatId,
-      "✅ Language changed to English.",
-      keyboard
-    );
-  }
-
-  // الفرنسية
-  if (text === "🇫🇷 Français") {
-
-    setLanguage(chatId, "fr");
-
-    return bot.sendMessage(
-      chatId,
-      "✅ Langue changée en français.",
-      keyboard
-    );
-  }
-
-});
+  if (
+    text === "🌐 تغيير اللغة" ||
+    text === "🌐 Language" ||
+    text === "🌐 Langue"
+  ) {
+    return
