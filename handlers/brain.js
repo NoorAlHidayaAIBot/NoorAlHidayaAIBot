@@ -1,5 +1,6 @@
 const bot = require("../config/bot");
 const { getSmartReply } = require("../services/brainService");
+const { askAI } = require("../services/aiService");
 
 bot.on("message", async (msg) => {
 
@@ -10,38 +11,37 @@ bot.on("message", async (msg) => {
 
     const ignored = [
         "/start",
-
-        "📚 الأحاديث",
-        "📚 Hadith",
-        "📚 Hadiths",
-
         "📖 تفسير القرآن",
-        "📖 Quran Tafsir",
-        "📖 Tafsir du Coran",
-
+        "📚 الأحاديث",
+        "⚖️ الفقه الإسلامي",
+        "🤲 الأذكار",
+        "🌐 تغيير اللغة",
         "🤖 عن البوت",
         "🤖 About Bot",
         "🤖 À propos",
-
-        "🌐 تغيير اللغة",
-        "🌐 Language",
-        "🌐 Langue",
-
         "🔍 البحث عن حديث",
         "📖 صحيح البخاري",
         "📘 صحيح مسلم",
         "📙 جامع الترمذي",
-
-        "⬅️ العودة للقائمة الرئيسية"
+        "⬅️ العودة للقائمة الرئيسية",
+        "🇸🇦 العربية",
+        "🇬🇧 English",
+        "🇫🇷 Français"
     ];
 
     if (ignored.includes(text)) return;
 
-    const reply = getSmartReply(text);
+    const localReply = getSmartReply(text);
 
-    if (reply) {
-        return bot.sendMessage(chatId, reply);
+    if (localReply) {
+        return bot.sendMessage(chatId, localReply);
     }
+
+    await bot.sendMessage(chatId, "🤖 أفكر...");
+
+    const aiReply = await askAI(text);
+
+    return bot.sendMessage(chatId, aiReply);
 
 });
 
